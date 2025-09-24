@@ -1,0 +1,391 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+    animation: fadeInDown 1s ease-out;
+}
+
+.header h1 {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.header p {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    
+}
+
+.university-logo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #667eea;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.search-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 20px 60px 20px 20px;
+    font-size: 1.2rem;
+    border: 3px solid #e0e0e0;
+    border-radius: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px);
+}
+
+.search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.search-btn:hover {
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  padding: 10px 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.navbar-logo {
+  font-size: 1.5em;
+  margin-right: 40px;
+  font-weight: bold;
+}
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+.navbar-links li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.navbar-links li a:hover {
+  color: #2573c7;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f5f5f5;
+  padding: 10px 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.navbar-logo {
+  font-size: 1.5em;
+  margin-right: 40px;
+  font-weight: bold;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navbar-links li a:hover {
+  color: #2573c7;
+}
+
+.navbar-auth {
+  display: flex;
+  gap: 10px;
+}
+
+.login-btn, .signup-btn {
+  padding: 7px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  line-height: normal;
+}
+
+.login-btn {
+  background-color: #fff;
+  color: #2573c7;
+  border: 1px solid #2573c7;
+}
+
+.signup-btn {
+  background: #2573c7;
+  color: #fff;
+}
+
+
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.quick-link-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Apply animation to inner content only */
+.quick-link-card .card-content {
+    animation: fadeInUp 1s ease-out;
+}
+
+/* Staggered animation delays */
+.quick-link-card:nth-child(1) .card-content { animation-delay: 0s; animation-fill-mode: both; }
+.quick-link-card:nth-child(2) .card-content { animation-delay: 0.1s; animation-fill-mode: both; }
+.quick-link-card:nth-child(3) .card-content { animation-delay: 0.2s; animation-fill-mode: both; }
+.quick-link-card:nth-child(4) .card-content { animation-delay: 0.3s; animation-fill-mode: both; }
+
+/* Hover effect on card wrapper */
+.quick-link-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+}
+
+.academic-icon { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+.dining-icon { background: linear-gradient(135deg, #feca57, #ff9ff3); }
+.residence-icon { background: linear-gradient(135deg, #48dbfb, #0abde3); }
+.recreation-icon { background: linear-gradient(135deg, #1dd1a1, #10ac84); }
+
+.card-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card-description {
+    color: #666;
+    line-height: 1.5;
+}
+
+.features-preview {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 40px;
+    animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.features-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: translateX(5px);
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #667eea;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.feature-item:hover .feature-icon {
+    background: white;
+    color: #667eea;
+}
+
+.cta-section {
+    text-align: center;
+    padding: 40px;
+    animation: fadeInUp 1s ease-out 0.9s both;
+}
+
+.main-cta {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 20px 50px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.main-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.suggestions {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}
+
+.suggestion-item {
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: all 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background: #f8f9fa;
+    color: #667eea;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2.5rem;
+    }
+    
+    .search-section, .features-preview {
+        padding: 25px;
+    }
+    
+    .quick-links {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}

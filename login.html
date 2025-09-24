@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CampusNav Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .auth-container {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2573c7;
+            text-align: center;
+        }
+        form {
+            display: none;
+            flex-direction: column;
+        }
+        form.active {
+            display: flex;
+        }
+        label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #2573c7;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1a4f8c;
+        }
+        .toggle-text {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .toggle-text span {
+            color: #2573c7;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2 id="formTitle">Login to CampusNav</h2>
+        
+        <form id="loginForm" class="active" onsubmit="handleLogin(event)">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" required placeholder="Enter your email" />
+            
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" required placeholder="Enter your password" />
+            
+            <button type="submit">Login</button>
+            <div class="error-message" id="loginError"></div>
+        </form>
+        
+        <form id="signupForm" onsubmit="handleSignup(event)">
+            <label for="signupName">Full Name</label>
+            <input id="signupName" type="text" required placeholder="Your full name" />
+            
+            <label for="signupEmail">Email</label>
+            <input id="signupEmail" type="email" required placeholder="Your email" />
+            
+            <label for="signupPassword">Password</label>
+            <input id="signupPassword" type="password" required placeholder="Create a password" />
+            
+            <label for="signupConfirmPassword">Confirm Password</label>
+            <input id="signupConfirmPassword" type="password" required placeholder="Confirm your password" />
+            
+            <button type="submit">Sign Up</button>
+            <div class="error-message" id="signupError"></div>
+        </form>
+        
+        <div class="toggle-text" id="toggleText">
+            New user? <span onclick="toggleForms()">Create an account</span>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const formTitle = document.getElementById('formTitle');
+        const toggleText = document.getElementById('toggleText');
+
+        function toggleForms() {
+            if (loginForm.classList.contains('active')) {
+                loginForm.classList.remove('active');
+                signupForm.classList.add('active');
+                formTitle.textContent = 'Create a CampusNav Account';
+                toggleText.innerHTML = 'Already have an account? <span onclick="toggleForms()">Login here</span>';
+                clearErrors();
+            } else {
+                signupForm.classList.remove('active');
+                loginForm.classList.add('active');
+                formTitle.textContent = 'Login to CampusNav';
+                toggleText.innerHTML = 'New user? <span onclick="toggleForms()">Create an account</span>';
+                clearErrors();
+            }
+        }
+        
+        function clearErrors() {
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('signupError').textContent = '';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            clearErrors();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                document.getElementById('loginError').textContent = 'Please enter email and password.';
+                return;
+            }
+            // Placeholder login validation
+            alert(`Logging in with email: ${email}`);
+            // In real app, submit to backend for authentication
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            clearErrors();
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            
+            if (!name || !email || !password || !confirmPassword) {
+                document.getElementById('signupError').textContent = 'All fields are required.';
+                return;
+            }
+            if (password !== confirmPassword) {
+                document.getElementById('signupError').textContent = 'Passwords do not match.';
+                return;
+            }
+            // Placeholder signup action
+            alert(`Creating account for ${name} with email: ${email}`);
+            // In real app, submit data to backend to create user
+        }
+    </script>
+</body>
+</html>

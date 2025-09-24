@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Campus Navigator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js"></script>
+
+</head>
+<body>
+    <!-- Navbar Section -->
+<nav class="navbar">
+  <div class="navbar-logo">🏫 CampusNav</div>
+  <ul class="navbar-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#" onclick="openMainMap()">CampusMap</a></li>
+    <li><a href="#" onclick="showCategory('academic')">Academic</a></li>
+    <li><a href="#" onclick="showCategory('Buildings')">Buildings</a></li>
+    <li><a href="#" onclick="showCategory('Events')">Events</a></li>
+    <li><a href="#" onclick="showCategory('Services')">Services</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+   <div class="navbar-auth">
+  <a href="login.html" class="login-btn">Login</a>
+  <a href="login.html" class="signup-btn">Sign Up</a>
+</div>
+
+</nav>
+</nav>
+
+    <div class="container">
+        <div class="header">
+            <div class="university-logo">🏫</div>
+            <h1>Virtual Campus Navigator</h1>
+            
+            <p>Find your way around campus with ease and confidence</p>
+            <p>You can navigate through campus with ease</p>
+        </div>
+        
+        <div class="search-section">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    placeholder="Search for buildings, departments, or rooms..." 
+                    id="searchInput"
+                    autocomplete="off"
+                >
+                <button class="search-btn" onclick="performSearch()">🔍</button>
+                <div class="suggestions" id="suggestions"></div>
+            </div>
+        </div>
+        
+        <div class="quick-links">
+            <div class="quick-link-card" onclick="showCategory('academic')">
+                <div class="card-icon academic-icon">📚</div>
+                <div class="card-title">Academic Buildings</div>
+                <div class="card-description">Libraries, lecture halls, laboratories, and department offices</div>
+            </div>
+            
+            <div class="quick-link-card" onclick="showCategory('dining')">
+                <div class="card-icon dining-icon">🍽️</div>
+                <div class="card-title">Dining & Food</div>
+                <div class="card-description">Cafeterias, restaurants, coffee shops, and vending areas</div>
+            </div>
+            
+            <div class="quick-link-card" onclick="showCategory('residence')">
+                <div class="card-icon residence-icon">🏠</div>
+                <div class="card-title">Residence Halls</div>
+                <div class="card-description">Dormitories, student housing, and residential facilities</div>
+            </div>
+            
+            <div class="quick-link-card" onclick="showCategory('recreation')">
+                <div class="card-icon recreation-icon">⚽</div>
+                <div class="card-title">Recreation & Sports</div>
+                <div class="card-description">Gyms, sports fields, student center, and activity spaces</div>
+            </div>
+        </div>
+        
+        <div class="features-preview">
+            <h2 class="features-title">What You Can Do</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🗺️</div>
+                    <div>Interactive campus map with detailed building information</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔍</div>
+                    <div>Smart search with auto-suggestions and filters</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🧭</div>
+                    <div>Step-by-step directions between any two locations</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⏰</div>
+                    <div>Real-time building hours and facility information</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📱</div>
+                    <div>Mobile-friendly design that works on any device</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⭐</div>
+                    <div>Save favorite locations for quick access</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <a href="#" class="main-cta" onclick="openMainMap()">Explore Campus Map</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
