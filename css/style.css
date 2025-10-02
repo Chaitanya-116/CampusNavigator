@@ -19,6 +19,7 @@ body {
 
 .header {
     text-align: center;
+    
     color: white;
     margin-bottom: 40px;
     animation: fadeInDown 1s ease-out;
