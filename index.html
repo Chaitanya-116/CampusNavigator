@@ -4,115 +4,444 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Virtual Campus Navigator</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="js/script.js"></script>
+    <!-- Simple favicon to avoid 404 in dev -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%8F%AB%3C/text%3E%3C/svg%3E" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f4ff',
+                            500: '#667eea',
+                            600: '#5a67d8',
+                            700: '#4c51bf'
+                        },
+                        secondary: {
+                            500: '#764ba2'
+                        }
+                    },
+                    animation: {
+                        'fade-in-down': 'fadeInDown 1s ease-out',
+                        'fade-in-up': 'fadeInUp 1s ease-out',
+                        'bounce-subtle': 'bounceSubtle 2s infinite'
+                    },
+                    keyframes: {
+                        fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-50px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(50px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <!-- MapLibre GL (for 3D-like view, no API keys) -->
+    <link
+      href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"
+    ></script>
+
+    <!-- Cache-bust to ensure latest JS is loaded -->
+    <script src="js/script.js?v=2"></script>
 
 </head>
-<body>
-    <!-- Navbar Section -->
-<nav class="navbar">
-  <div class="navbar-logo">🏫 CampusNav</div>
-  <ul class="navbar-links">
-    <li><a href="#">Home</a></li>
-    <li><a href="#" onclick="openMainMap()">CampusMap</a></li>
-    <li><a href="#" onclick="showCategory('academic')">Academic</a></li>
-    <li><a href="#" onclick="showCategory('Buildings')">Buildings</a></li>
-    <li><a href="#" onclick="showCategory('Events')">Events</a></li>
-    <li><a href="#" onclick="showCategory('Services')">Services</a></li>
-    <li><a href="#">Contact</a></li>
-  </ul>
-   <div class="navbar-auth">
-  <a href="login.html" class="login-btn">Login</a>
-  <a href="login.html" class="signup-btn">Sign Up</a>
-</div>
+<body class="min-h-screen bg-gradient-to-br from-primary-500 via-purple-600 to-secondary-500">
+    <!-- Navigation Header -->
+    <nav class="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                        🏫
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">CampusNav</span>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium">Home</a>
+                    <a href="#" onclick="openMainMap()" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium">Campus Map</a>
+                    <a href="#" onclick="showCategory('academic')" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium">Academic</a>
+                    <a href="#" onclick="showCategory('Buildings')" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium">Buildings</a>
+                    <a href="#" onclick="showCategory('Events')" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium">Events</a>
+                    <a href="#" onclick="showCategory('Services')" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium">Services</a>
+                    <a href="#" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium">Contact</a>
+                </div>
+                
+                <!-- Auth Buttons -->
+                <div class="hidden md:flex items-center space-x-3" id="auth-desktop">
+                    <a href="login.html" id="nav-login" class="px-4 py-2 text-primary-600 border border-primary-600 rounded-lg hover:bg-primary-50 transition-all duration-200 font-medium">
+                        Login
+                    </a>
+                    <a href="login.html" id="nav-signup" class="px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 font-medium">
+                        Sign Up
+                    </a>
+                    <span id="nav-greeting" class="hidden text-gray-700"></span>
+                    <button id="nav-logout" class="hidden px-4 py-2 text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-all duration-200 font-medium">Logout</button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-primary-600 focus:outline-none focus:text-primary-600 transition-colors duration-200">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden hidden pb-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="#" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2">Home</a>
+                    <a href="#" onclick="openMainMap()" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2">Campus Map</a>
+                    <a href="#" onclick="showCategory('academic')" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2">Academic</a>
+                    <a href="#" onclick="showCategory('Buildings')" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2">Buildings</a>
+                    <a href="#" onclick="showCategory('Events')" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2">Events</a>
+                    <a href="#" onclick="showCategory('Services')" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2">Services</a>
+                    <a href="#" class="text-gray-700 hover:text-primary-600 transition-colors duration-200 font-medium py-2">Contact</a>
+                    <div class="flex flex-col space-y-2 pt-3 border-t border-gray-200" id="auth-mobile">
+                        <a href="login.html" id="m-login" class="px-4 py-2 text-primary-600 border border-primary-600 rounded-lg hover:bg-primary-50 transition-all duration-200 font-medium text-center">
+                            Login
+                        </a>
+                        <a href="login.html" id="m-signup" class="px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg hover:shadow-lg transition-all duration-200 font-medium text-center">
+                            Sign Up
+                        </a>
+                        <span id="m-greeting" class="hidden text-gray-700 text-center py-2"></span>
+                        <button id="m-logout" class="hidden px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all duration-200 font-medium text-center">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-</nav>
-</nav>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <header class="text-center text-white mb-12 animate-fade-in-down">
+            <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                <span class="text-3xl">🏫</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 text-shadow-lg">
+                Virtual Campus Navigator
+            </h1>
+            <p class="text-xl md:text-2xl mb-2 opacity-90">
+                Find your way around campus with ease and confidence
+            </p>
+            <p class="text-lg md:text-xl opacity-80">
+                Navigate through campus with ease
+            </p>
+        </header>
+        
+        <!-- Search Section -->
+        <section class="bg-white/95 backdrop-blur-md rounded-3xl p-8 mb-12 shadow-2xl animate-fade-in-up">
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        class="w-full px-6 py-4 pr-16 text-lg border-3 border-gray-200 rounded-2xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 focus:outline-none transition-all duration-300 hover:shadow-lg" 
+                        placeholder="Search for buildings, departments, or rooms..." 
+                        id="searchInput"
+                        autocomplete="off"
+                    >
+                    <button 
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white p-3 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary-200" 
+                        onclick="performSearch()"
+                    >
+                        🔍
+                    </button>
+                    <div class="suggestions absolute top-full left-0 right-0 bg-white rounded-xl shadow-xl mt-2 max-h-64 overflow-y-auto z-10 hidden" id="suggestions"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Quick Links Section -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <article id="card-academic" data-quick-card data-category="academic" class="bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2 hover:scale-105 transition-all duration-300 group" onclick="showCategory('academic')">
+                <div class="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-white group-hover:animate-bounce-subtle">
+                    📚
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800 group-hover:text-primary-600 transition-colors duration-200">
+                    Academic Buildings
+                </h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Libraries, lecture halls, laboratories, and department offices
+                </p>
+            </article>
+            
+            <article id="card-dining" data-quick-card data-category="dining" class="bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2 hover:scale-105 transition-all duration-300 group" onclick="showCategory('dining')">
+                <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-white group-hover:animate-bounce-subtle">
+                    🍽️
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800 group-hover:text-primary-600 transition-colors duration-200">
+                    Dining & Food
+                </h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Cafeterias, restaurants, coffee shops, and vending areas
+                </p>
+            </article>
+            
+            <article id="card-residence" data-quick-card data-category="residence" class="bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2 hover:scale-105 transition-all duration-300 group" onclick="showCategory('residence')">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-white group-hover:animate-bounce-subtle">
+                    🏠
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800 group-hover:text-primary-600 transition-colors duration-200">
+                    Residence Halls
+                </h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Dormitories, student housing, and residential facilities
+                </p>
+            </article>
+            
+            <article id="card-recreation" data-quick-card data-category="recreation" class="bg-white rounded-2xl p-6 text-center cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2 hover:scale-105 transition-all duration-300 group" onclick="showCategory('recreation')">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-white group-hover:animate-bounce-subtle">
+                    ⚽
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-800 group-hover:text-primary-600 transition-colors duration-200">
+                    Recreation & Sports
+                </h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Gyms, sports fields, student center, and activity spaces
+                </p>
+            </article>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="bg-white/95 backdrop-blur-md rounded-3xl p-8 mb-12 shadow-2xl">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800">
+                What You Can Do
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gradient-to-r hover:from-primary-500 hover:to-secondary-500 hover:text-white transition-all duration-300 group cursor-pointer">
+                    <div class="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mr-4 text-xl group-hover:bg-white group-hover:text-primary-500 transition-all duration-300">
+                        🗺️
+                    </div>
+                    <div class="font-medium">Interactive campus map with detailed building information</div>
+                </div>
+                <div class="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gradient-to-r hover:from-primary-500 hover:to-secondary-500 hover:text-white transition-all duration-300 group cursor-pointer">
+                    <div class="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mr-4 text-xl group-hover:bg-white group-hover:text-primary-500 transition-all duration-300">
+                        🔍
+                    </div>
+                    <div class="font-medium">Smart search with auto-suggestions and filters</div>
+                </div>
+                <div class="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gradient-to-r hover:from-primary-500 hover:to-secondary-500 hover:text-white transition-all duration-300 group cursor-pointer">
+                    <div class="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mr-4 text-xl group-hover:bg-white group-hover:text-primary-500 transition-all duration-300">
+                        🧭
+                    </div>
+                    <div class="font-medium">Step-by-step directions between any two locations</div>
+                </div>
+                <div class="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gradient-to-r hover:from-primary-500 hover:to-secondary-500 hover:text-white transition-all duration-300 group cursor-pointer">
+                    <div class="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mr-4 text-xl group-hover:bg-white group-hover:text-primary-500 transition-all duration-300">
+                        ⏰
+                    </div>
+                    <div class="font-medium">Real-time building hours and facility information</div>
+                </div>
+                <div class="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gradient-to-r hover:from-primary-500 hover:to-secondary-500 hover:text-white transition-all duration-300 group cursor-pointer">
+                    <div class="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mr-4 text-xl group-hover:bg-white group-hover:text-primary-500 transition-all duration-300">
+                        📱
+                    </div>
+                    <div class="font-medium">Mobile-friendly design that works on any device</div>
+                </div>
+                <div class="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gradient-to-r hover:from-primary-500 hover:to-secondary-500 hover:text-white transition-all duration-300 group cursor-pointer">
+                    <div class="w-12 h-12 bg-primary-500 text-white rounded-full flex items-center justify-center mr-4 text-xl group-hover:bg-white group-hover:text-primary-500 transition-all duration-300">
+                        ⭐
+                    </div>
+                    <div class="font-medium">Save favorite locations for quick access</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Map Interface Section -->
+        <section id="map-section" aria-labelledby="map-title" class="mb-12">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden">
+                <!-- Toolbar for mobile -->
+                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 md:hidden">
+                    <h2 id="map-title" class="text-lg font-semibold text-gray-800">Interactive Campus Map</h2>
+                    <button id="map-sidebar-toggle" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h10M4 18h16" /></svg>
+                        Filters
+                    </button>
+                </div>
 
-    <div class="container">
-        <div class="header">
-            <div class="university-logo">🏫</div>
-            <h1>Virtual Campus Navigator</h1>
-            
-            <p>Find your way around campus with ease and confidence</p>
-            <p>You can navigate through campus with ease</p>
-        </div>
-        
-        <div class="search-section">
-            <div class="search-container">
-                <input 
-                    type="text" 
-                    class="search-input" 
-                    placeholder="Search for buildings, departments, or rooms..." 
-                    id="searchInput"
-                    autocomplete="off"
-                >
-                <button class="search-btn" onclick="performSearch()">🔍</button>
-                <div class="suggestions" id="suggestions"></div>
-            </div>
-        </div>
-        
-        <div class="quick-links">
-            <div class="quick-link-card" onclick="showCategory('academic')">
-                <div class="card-icon academic-icon">📚</div>
-                <div class="card-title">Academic Buildings</div>
-                <div class="card-description">Libraries, lecture halls, laboratories, and department offices</div>
-            </div>
-            
-            <div class="quick-link-card" onclick="showCategory('dining')">
-                <div class="card-icon dining-icon">🍽️</div>
-                <div class="card-title">Dining & Food</div>
-                <div class="card-description">Cafeterias, restaurants, coffee shops, and vending areas</div>
-            </div>
-            
-            <div class="quick-link-card" onclick="showCategory('residence')">
-                <div class="card-icon residence-icon">🏠</div>
-                <div class="card-title">Residence Halls</div>
-                <div class="card-description">Dormitories, student housing, and residential facilities</div>
-            </div>
-            
-            <div class="quick-link-card" onclick="showCategory('recreation')">
-                <div class="card-icon recreation-icon">⚽</div>
-                <div class="card-title">Recreation & Sports</div>
-                <div class="card-description">Gyms, sports fields, student center, and activity spaces</div>
-            </div>
-        </div>
-        
-        <div class="features-preview">
-            <h2 class="features-title">What You Can Do</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">🗺️</div>
-                    <div>Interactive campus map with detailed building information</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🔍</div>
-                    <div>Smart search with auto-suggestions and filters</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">🧭</div>
-                    <div>Step-by-step directions between any two locations</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">⏰</div>
-                    <div>Real-time building hours and facility information</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">📱</div>
-                    <div>Mobile-friendly design that works on any device</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">⭐</div>
-                    <div>Save favorite locations for quick access</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="cta-section">
-            <a href="#" class="main-cta" onclick="openMainMap()">Explore Campus Map</a>
-        </div>
-    </div>
+                <div class="grid grid-cols-1 md:grid-cols-[320px,1fr]">
+                    <!-- Sidebar -->
+                    <aside id="map-sidebar" class="md:block hidden md:border-r border-gray-200 md:p-6 p-4 bg-white/90">
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Categories</h3>
+                                <nav class="space-y-2">
+                                    <button onclick="showCategory('academic')" class="w-full text-left px-4 py-2 rounded-lg bg-gray-50 hover:bg-primary-50 hover:text-primary-700 transition-all">📚 Academic</button>
+                                    <button onclick="showCategory('dining')" class="w-full text-left px-4 py-2 rounded-lg bg-gray-50 hover:bg-primary-50 hover:text-primary-700 transition-all">🍽️ Dining</button>
+                                    <button onclick="showCategory('residence')" class="w-full text-left px-4 py-2 rounded-lg bg-gray-50 hover:bg-primary-50 hover:text-primary-700 transition-all">🏠 Residence</button>
+                                    <button onclick="showCategory('recreation')" class="w-full text-left px-4 py-2 rounded-lg bg-gray-50 hover:bg-primary-50 hover:text-primary-700 transition-all">⚽ Recreation</button>
+                                </nav>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Quick Actions</h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button onclick="openMainMap()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 text-white hover:shadow-lg hover:-translate-y-0.5 transition-all">Open Map</button>
+                                    <button onclick="performSearch()" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-all">Search</button>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Tips</h3>
+                                <ul class="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                                    <li>Tap buildings for hours and departments</li>
+                                    <li>Use search to jump to a location</li>
+                                    <li>Filter by category for a focused view</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </aside>
 
-    <script src="script.js"></script>
+                    <!-- Map Container -->
+                    <div class="relative">
+                        <div id="map" class="w-full h-[420px] sm:h-[480px] md:h-[520px]"></div>
+                        <!-- 3D MapLibre container (hidden by default) -->
+                        <div id="map-3d" class="w-full h-[420px] sm:h-[480px] md:h-[520px] hidden"></div>
+                        <!-- Floating controls -->
+                        <div class="absolute top-4 right-4 flex flex-col gap-2">
+                            <button id="zoom-in" class="px-3 py-2 rounded-lg bg-white shadow hover:shadow-lg transition-all" aria-label="Zoom in">+</button>
+                            <button id="zoom-out" class="px-3 py-2 rounded-lg bg-white shadow hover:shadow-lg transition-all" aria-label="Zoom out">−</button>
+                            <button id="toggle-3d" class="px-3 py-2 rounded-lg bg-white shadow hover:shadow-lg transition-all" aria-label="Toggle 3D">3D</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="text-center py-12">
+            <a href="#" 
+               class="inline-block bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-12 py-4 rounded-full text-xl font-semibold hover:shadow-2xl hover:-translate-y-1 hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary-200" 
+               onclick="openMainMap()">
+                Explore Campus Map
+            </a>
+        </section>
+    </main>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prevent default navigation for anchors that rely on onclick handlers
+            document.querySelectorAll('a[onclick]')?.forEach(a => {
+                a.addEventListener('click', function(e) { e.preventDefault(); });
+            });
+            // Mobile navbar menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Map sidebar toggle (mobile only)
+            const mapSidebarToggle = document.getElementById('map-sidebar-toggle');
+            const mapSidebar = document.getElementById('map-sidebar');
+            if (mapSidebarToggle && mapSidebar) {
+                mapSidebarToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    mapSidebar.classList.toggle('hidden');
+                });
+            }
+
+            // Close menus when clicking outside
+            document.addEventListener('click', function(event) {
+                if (mobileMenu && !mobileMenu.contains(event.target) && !mobileMenuButton?.contains(event.target)) {
+                    mobileMenu.classList.add('hidden');
+                }
+                if (mapSidebar && !mapSidebar.contains(event.target) && !mapSidebarToggle?.contains(event.target)) {
+                    // Only auto-hide on small screens
+                    if (window.matchMedia('(max-width: 767px)').matches) {
+                        mapSidebar.classList.add('hidden');
+                    }
+                }
+            });
+
+            // --- Auth state for navbar ---
+            const API_BASE = 'http://localhost:4000/api/auth';
+            const navLogin = document.getElementById('nav-login');
+            const navSignup = document.getElementById('nav-signup');
+            const navGreeting = document.getElementById('nav-greeting');
+            const navLogout = document.getElementById('nav-logout');
+            const mLogin = document.getElementById('m-login');
+            const mSignup = document.getElementById('m-signup');
+            const mGreeting = document.getElementById('m-greeting');
+            const mLogout = document.getElementById('m-logout');
+
+            async function refreshAuthUI() {
+                try {
+                    const res = await fetch(`${API_BASE}/me`, { credentials: 'include' });
+                    const data = await res.json();
+                    const loggedIn = res.ok && data.ok && data.user;
+                    if (loggedIn) {
+                        // Hide login/signup; show greeting + logout
+                        if (navLogin) navLogin.classList.add('hidden');
+                        if (navSignup) navSignup.classList.add('hidden');
+                        if (navGreeting) { navGreeting.textContent = `Hi, ${data.user.name}`; navGreeting.classList.remove('hidden'); }
+                        if (navLogout) navLogout.classList.remove('hidden');
+
+                        if (mLogin) mLogin.classList.add('hidden');
+                        if (mSignup) mSignup.classList.add('hidden');
+                        if (mGreeting) { mGreeting.textContent = `Hi, ${data.user.name}`; mGreeting.classList.remove('hidden'); }
+                        if (mLogout) mLogout.classList.remove('hidden');
+                    } else {
+                        // Show login/signup; hide greeting + logout
+                        if (navLogin) navLogin.classList.remove('hidden');
+                        if (navSignup) navSignup.classList.remove('hidden');
+                        if (navGreeting) navGreeting.classList.add('hidden');
+                        if (navLogout) navLogout.classList.add('hidden');
+
+                        if (mLogin) mLogin.classList.remove('hidden');
+                        if (mSignup) mSignup.classList.remove('hidden');
+                        if (mGreeting) mGreeting.classList.add('hidden');
+                        if (mLogout) mLogout.classList.add('hidden');
+                    }
+                } catch (_) { /* ignore */ }
+            }
+
+            async function doLogout() {
+                try {
+                    await fetch(`${API_BASE}/logout`, { method: 'POST', credentials: 'include' });
+                } catch (_) {}
+                await refreshAuthUI();
+            }
+
+            if (navLogout) navLogout.addEventListener('click', (e) => { e.preventDefault(); doLogout(); });
+            if (mLogout) mLogout.addEventListener('click', (e) => { e.preventDefault(); doLogout(); });
+
+            refreshAuthUI();
+        });
+    </script>
 </body>
 </html>

@@ -4,164 +4,157 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CampusNav Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fa;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f0f4ff', 500: '#667eea', 600: '#5a67d8', 700: '#4c51bf' },
+                        secondary: { 500: '#764ba2' }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
         }
-        .auth-container {
-            background: white;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 350px;
-        }
-        h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #2573c7;
-            text-align: center;
-        }
-        form {
-            display: none;
-            flex-direction: column;
-        }
-        form.active {
-            display: flex;
-        }
-        label {
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        input[type="text"], input[type="email"], input[type="password"] {
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #2573c7;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #1a4f8c;
-        }
-        .toggle-text {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 0.9em;
-            color: #555;
-        }
-        .toggle-text span {
-            color: #2573c7;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .error-message {
-            color: red;
-            font-size: 0.85em;
-            margin-bottom: 10px;
-        }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="auth-container">
-        <h2 id="formTitle">Login to CampusNav</h2>
-        
-        <form id="loginForm" class="active" onsubmit="handleLogin(event)">
-            <label for="loginEmail">Email</label>
-            <input id="loginEmail" type="email" required placeholder="Enter your email" />
-            
-            <label for="loginPassword">Password</label>
-            <input id="loginPassword" type="password" required placeholder="Enter your password" />
-            
-            <button type="submit">Login</button>
-            <div class="error-message" id="loginError"></div>
-        </form>
-        
-        <form id="signupForm" onsubmit="handleSignup(event)">
-            <label for="signupName">Full Name</label>
-            <input id="signupName" type="text" required placeholder="Your full name" />
-            
-            <label for="signupEmail">Email</label>
-            <input id="signupEmail" type="email" required placeholder="Your email" />
-            
-            <label for="signupPassword">Password</label>
-            <input id="signupPassword" type="password" required placeholder="Create a password" />
-            
-            <label for="signupConfirmPassword">Confirm Password</label>
-            <input id="signupConfirmPassword" type="password" required placeholder="Confirm your password" />
-            
-            <button type="submit">Sign Up</button>
-            <div class="error-message" id="signupError"></div>
-        </form>
-        
-        <div class="toggle-text" id="toggleText">
-            New user? <span onclick="toggleForms()">Create an account</span>
-        </div>
-    </div>
+<body class="min-h-screen bg-gradient-to-br from-primary-500 via-purple-600 to-secondary-500 flex items-center justify-center p-4">
+    <main class="w-full max-w-md">
+        <section class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 animate-fade-in-up">
+            <div class="flex flex-col items-center text-center mb-6">
+                <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 text-white flex items-center justify-center text-2xl shadow-lg mb-3">🏫</div>
+                <h2 id="formTitle" class="text-2xl font-bold text-gray-800">Login to CampusNav</h2>
+                <p class="text-gray-500 text-sm mt-1">Welcome back! Please enter your details.</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="space-y-4" onsubmit="handleLogin(event)">
+                <div>
+                    <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input id="loginEmail" type="email" required placeholder="you@example.com" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition" />
+                </div>
+                <div>
+                    <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input id="loginPassword" type="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition" />
+                </div>
+                <div class="text-right">
+                    <a href="#" class="text-sm text-primary-600 hover:text-primary-700">Forgot password?</a>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">Login</button>
+                <p class="text-red-600 text-sm" id="loginError"></p>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="signupForm" class="space-y-4 hidden" onsubmit="handleSignup(event)">
+                <div>
+                    <label for="signupName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input id="signupName" type="text" required placeholder="Jane Doe" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition" />
+                </div>
+                <div>
+                    <label for="signupEmail" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input id="signupEmail" type="email" required placeholder="you@example.com" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition" />
+                </div>
+                <div>
+                    <label for="signupPassword" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input id="signupPassword" type="password" required placeholder="Create a password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition" />
+                </div>
+                <div>
+                    <label for="signupConfirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <input id="signupConfirmPassword" type="password" required placeholder="Confirm your password" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition" />
+                </div>
+                <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all">Create Account</button>
+                <p class="text-red-600 text-sm" id="signupError"></p>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-gray-600" id="toggleText">
+                New user? <button type="button" class="text-primary-600 font-semibold hover:text-primary-700" onclick="toggleForms()">Create an account</button>
+            </div>
+        </section>
+    </main>
 
     <script>
+        const API_BASE = 'http://localhost:4000/api/auth';
         const loginForm = document.getElementById('loginForm');
         const signupForm = document.getElementById('signupForm');
         const formTitle = document.getElementById('formTitle');
         const toggleText = document.getElementById('toggleText');
 
+        document.addEventListener('DOMContentLoaded', async () => {
+            // If already authenticated, redirect to home
+            try {
+                const meRes = await fetch(`${API_BASE}/me`, { credentials: 'include' });
+                const me = await meRes.json();
+                if (meRes.ok && me.ok) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+            } catch (_) {}
+        });
+
         function toggleForms() {
-            if (loginForm.classList.contains('active')) {
-                loginForm.classList.remove('active');
-                signupForm.classList.add('active');
+            const showingLogin = !loginForm.classList.contains('hidden');
+            if (showingLogin) {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
                 formTitle.textContent = 'Create a CampusNav Account';
-                toggleText.innerHTML = 'Already have an account? <span onclick="toggleForms()">Login here</span>';
-                clearErrors();
+                toggleText.innerHTML = 'Already have an account? <button type="button" class="text-primary-600 font-semibold hover:text-primary-700" onclick="toggleForms()">Login here</button>';
             } else {
-                signupForm.classList.remove('active');
-                loginForm.classList.add('active');
+                signupForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
                 formTitle.textContent = 'Login to CampusNav';
-                toggleText.innerHTML = 'New user? <span onclick="toggleForms()">Create an account</span>';
-                clearErrors();
+                toggleText.innerHTML = 'New user? <button type="button" class="text-primary-600 font-semibold hover:text-primary-700" onclick="toggleForms()">Create an account</button>';
             }
+            clearErrors();
         }
-        
+
         function clearErrors() {
             document.getElementById('loginError').textContent = '';
             document.getElementById('signupError').textContent = '';
         }
 
-        function handleLogin(event) {
+        async function handleLogin(event) {
             event.preventDefault();
             clearErrors();
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
             if (!email || !password) {
                 document.getElementById('loginError').textContent = 'Please enter email and password.';
                 return;
             }
-            // Placeholder login validation
-            alert(`Logging in with email: ${email}`);
-            // In real app, submit to backend for authentication
+            try {
+                const res = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok) {
+                    document.getElementById('loginError').textContent = data.message || 'Login failed.';
+                    return;
+                }
+                window.location.href = 'index.html';
+            } catch (err) {
+                document.getElementById('loginError').textContent = 'Network error. Please try again.';
+            }
         }
 
-        function handleSignup(event) {
+        async function handleSignup(event) {
             event.preventDefault();
             clearErrors();
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const password = document.getElementById('signupPassword').value;
             const confirmPassword = document.getElementById('signupConfirmPassword').value;
-            
             if (!name || !email || !password || !confirmPassword) {
                 document.getElementById('signupError').textContent = 'All fields are required.';
                 return;
@@ -170,9 +163,22 @@
                 document.getElementById('signupError').textContent = 'Passwords do not match.';
                 return;
             }
-            // Placeholder signup action
-            alert(`Creating account for ${name} with email: ${email}`);
-            // In real app, submit data to backend to create user
+            try {
+                const res = await fetch(`${API_BASE}/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok) {
+                    document.getElementById('signupError').textContent = data.message || 'Signup failed.';
+                    return;
+                }
+                window.location.href = 'index.html';
+            } catch (err) {
+                document.getElementById('signupError').textContent = 'Network error. Please try again.';
+            }
         }
     </script>
 </body>
